@@ -8,6 +8,7 @@ class sshd::setup {
     require => Package["openssh"],
     name => $operatingsystem ? {
       Debian  => 'ssh',
+      Ubuntu  => 'ssh',
       default => 'sshd',
     }
   }	
