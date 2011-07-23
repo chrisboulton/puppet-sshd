@@ -1,22 +1,27 @@
 # This class will ensure SSH is setup, configured and running.
 class sshd::setup {
-  service { "sshd":
+  $sshpackage = $operatingsystem ? {
+    Debian => 'openssh-server',
+    Ubuntu => 'openssh-server',
+    default => 'openssh',
+  }
+
+  $sshservice = $operatingsystem ? {
+    Debian => 'ssh',
+    Ubuntu => 'ssh',
+    default => 'sshd',
+  }
+
+  package { $sshpackage:
+    ensure => installed,
+    alias => 'openssh',
+  }
+
+  service { $sshservice:
     enable => true,
     ensure => running,
     hasrestart => true,
     hasstatus => true,
-    require => Package["openssh"],
-    name => $operatingsystem ? {
-      Debian  => 'ssh',
-      default => 'sshd',
-    }
+    require => Package[openssh],
   }	
-  
-  package { "openssh":
-    name   => $operatingsystem ? {
-      Debian  => 'openssh-server',
-      default => 'openssh',
-    },
-    ensure => installed,
-  }
 }
