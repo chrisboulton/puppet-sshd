@@ -5,7 +5,12 @@ class sshd::setup {
     ensure => running,
     hasrestart => true,
     hasstatus => true,
-    require => Package["openssh"],
+    require => Package[ $operatingsystem ? {
+        Debian => 'ssh',
+        Ubuntu => 'ssh',
+        default => 'sshd',
+      },
+    ],
     name => $operatingsystem ? {
       Debian  => 'ssh',
       Ubuntu  => 'ssh',
